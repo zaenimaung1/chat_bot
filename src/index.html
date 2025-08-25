@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chatbot</title>
+    <title>GawNa AI Assistant</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
@@ -23,13 +23,40 @@
     <!-- Header -->
     <div class="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 p-4">
         <div class="max-w-4xl mx-auto flex items-center gap-3">
-            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
-            </div>
+            <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="128" height="128">
+  <!-- Background Circle -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="32" fill="url(#grad)" />
+
+  <!-- Cow Head -->
+  <path d="M20 20 C18 28, 46 28, 44 20 L44 44 C46 52, 18 52, 20 44 Z" fill="none" stroke="white" stroke-width="4" />
+
+  <!-- Eyes -->
+  <circle cx="24" cy="30" r="2.5" fill="white" />
+  <circle cx="40" cy="30" r="2.5" fill="white" />
+
+  <!-- Nostrils -->
+  <ellipse cx="28" cy="40" rx="3" ry="2" fill="white" />
+  <ellipse cx="36" cy="40" rx="3" ry="2" fill="white" />
+
+  <!-- Ears -->
+  <path d="M16 24 C12 20, 16 12, 20 16" fill="none" stroke="white" stroke-width="4"/>
+  <path d="M48 24 C52 20, 48 12, 44 16" fill="none" stroke="white" stroke-width="4"/>
+
+  <!-- Horns -->
+  <path d="M20 12 C18 6, 28 6, 24 12" fill="none" stroke="white" stroke-width="4"/>
+  <path d="M44 12 C46 6, 36 6, 40 12" fill="none" stroke="white" stroke-width="4"/>
+</svg>
+
+</div>
             <div>
-                <h1 class="text-xl font-semibold text-gray-900 dark:text-gray-100">AI Assistant</h1>
+                <h1 class="text-xl font-semibold text-gray-900 dark:text-gray-100">GawNa AI Assistant</h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400">Powered by Google AI</p>
             </div>
             <div class="ml-auto">
@@ -51,33 +78,64 @@
             <!-- Welcome Message -->
             <div id="welcomeMessage" class="text-center py-12">
                 <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                    </svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="128" height="128">
+  <!-- Background Circle -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="32" fill="url(#grad)" />
+
+  <!-- Cow Head -->
+  <path d="M20 20 C18 28, 46 28, 44 20 L44 44 C46 52, 18 52, 20 44 Z" fill="none" stroke="white" stroke-width="4" />
+
+  <!-- Eyes -->
+  <circle cx="24" cy="30" r="2.5" fill="white" />
+  <circle cx="40" cy="30" r="2.5" fill="white" />
+
+  <!-- Nostrils -->
+  <ellipse cx="28" cy="40" rx="3" ry="2" fill="white" />
+  <ellipse cx="36" cy="40" rx="3" ry="2" fill="white" />
+
+  <!-- Ears -->
+  <path d="M16 24 C12 20, 16 12, 20 16" fill="none" stroke="white" stroke-width="4"/>
+  <path d="M48 24 C52 20, 48 12, 44 16" fill="none" stroke="white" stroke-width="4"/>
+
+  <!-- Horns -->
+  <path d="M20 12 C18 6, 28 6, 24 12" fill="none" stroke="white" stroke-width="4"/>
+  <path d="M44 12 C46 6, 36 6, 40 12" fill="none" stroke="white" stroke-width="4"/>
+</svg>
+
                 </div>
-                <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Welcome to AI Assistant</h2>
+                <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Welcome to GawNa AI Assistant</h2>
                 <p class="text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-8">
-                    Start a conversation by typing a message below. I'm powered by Google AI and ready to help!
+                  “Hey there! GawNa is here — ask me anything and I’ll fetch it for you. 🚀 Powered by Google AI.”
                 </p>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mx-auto">
-                    <button class="suggestion-card p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left">
-                        <div class="font-medium text-gray-900 dark:text-gray-100 mb-1">Write a story</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">about a magic backpack</div>
-                    </button>
-                    <button class="suggestion-card p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left">
-                        <div class="font-medium text-gray-900 dark:text-gray-100 mb-1">Explain quantum computing</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">in simple terms</div>
-                    </button>
-                    <button class="suggestion-card p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left">
-                        <div class="font-medium text-gray-900 dark:text-gray-100 mb-1">Plan a workout routine</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">for beginners</div>
-                    </button>
-                    <button class="suggestion-card p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left">
-                        <div class="font-medium text-gray-900 dark:text-gray-100 mb-1">Help me debug</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">this JavaScript code</div>
-                    </button>
-                </div>
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mx-auto">
+    <button class="suggestion-card p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left">
+        <div class="font-medium text-gray-900 dark:text-gray-100 mb-1">What is Information Security?</div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">Explain the basic concept</div>
+    </button>
+
+    <button class="suggestion-card p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left">
+        <div class="font-medium text-gray-900 dark:text-gray-100 mb-1">CIA Triad</div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">Confidentiality, Integrity, Availability</div>
+    </button>
+
+    <button class="suggestion-card p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left">
+        <div class="font-medium text-gray-900 dark:text-gray-100 mb-1">Types of Cyber Attacks</div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">Phishing, Malware, DDoS, etc.</div>
+    </button>
+
+    <button class="suggestion-card p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left">
+        <div class="font-medium text-gray-900 dark:text-gray-100 mb-1">Best Security Practices</div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">Passwords, MFA, Encryption</div>
+    </button>
+</div>
+
             </div>
 
             <!-- Messages will be inserted here -->
@@ -97,7 +155,7 @@
                             <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
                             <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
                         </div>
-                        <span class="text-sm text-gray-500 dark:text-gray-400 ml-2">AI is thinking...</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400 ml-2">AI is Searching...</span>
                     </div>
                 </div>
             </div>
@@ -108,41 +166,31 @@
     <div class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 p-4">
         <div class="max-w-4xl mx-auto">
             <div class="flex gap-2">
-                <!-- File Upload Button -->
-                <div class="relative">
-                    <input type="file" id="fileInput" class="hidden" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.csv,.xlsx,.xls">
-                    <button
-                        type="button"
-                        id="fileUploadBtn"
-                        class="p-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border border-gray-300 dark:border-gray-600"
-                        title="Upload files"
-                    >
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
-                        </svg>
-                    </button>
-                </div>
+                <!-- File Upload Button ////-->
+               
 
                 <div class="flex-1 relative">
                     <textarea
                         id="messageInput"
-                        placeholder="Message AI Assistant..."
+                        placeholder="GawNa knows, just ask!"
                         class="w-full px-4 py-3 pr-16 border border-gray-300 dark:border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none"
                         rows="1"
                     ></textarea>
 
-                    <div class="absolute right-2 top-1/2 transform -translate-y-1/2">
-                        <button
-                            type="button"
-                            id="sendBtn"
-                            class="p-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-                            disabled
-                        >
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                            </svg>
-                        </button>
-                    </div>
+                  <div class="absolute right-2 top-6 transform -translate-y-1/2">
+    <button
+        type="button"
+        id="sendBtn"
+        class="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-md flex items-center justify-center transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled
+    >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+    </button>
+</div>
+
+
                 </div>
             </div>
             
@@ -152,7 +200,7 @@
             </div>
             
             <p class="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">
-                Press Enter to send your message or click the send button.
+                Press Enter to send your message.
             </p>
         </div>
     </div>
@@ -354,7 +402,7 @@
                         // errorMessage = `API Error (${error.response.status}): ${error.response.data?.error?.message || 'Unknown error'}`;
                         errorMessage = `API Error (${error.response.status}): ${error.response.data?.error?.message || 'Unknown error'}`;
                         if(error.response.status === 400) {
-                            errorMessage = 'Please use vpn for better performance.';
+                            errorMessage = 'Since most of the API is not officially available in your Country due to regional restrictions, you need to use a VPN to connect from a supported country 🙏😭.';
                         } else if (error.response.status === 500) {
                             errorMessage = 'Internal server error. Please try again later.';
                         }
@@ -408,9 +456,36 @@
                 messageDiv.innerHTML = `
                     ${!isUser ? `
                         <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
-                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                            </svg>
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="128" height="128">
+  <!-- Background Circle -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="32" fill="url(#grad)" />
+
+  <!-- Cow Head -->
+  <path d="M20 20 C18 28, 46 28, 44 20 L44 44 C46 52, 18 52, 20 44 Z" fill="none" stroke="white" stroke-width="4" />
+
+  <!-- Eyes -->
+  <circle cx="24" cy="30" r="2.5" fill="white" />
+  <circle cx="40" cy="30" r="2.5" fill="white" />
+
+  <!-- Nostrils -->
+  <ellipse cx="28" cy="40" rx="3" ry="2" fill="white" />
+  <ellipse cx="36" cy="40" rx="3" ry="2" fill="white" />
+
+  <!-- Ears -->
+  <path d="M16 24 C12 20, 16 12, 20 16" fill="none" stroke="white" stroke-width="4"/>
+  <path d="M48 24 C52 20, 48 12, 44 16" fill="none" stroke="white" stroke-width="4"/>
+
+  <!-- Horns -->
+  <path d="M20 12 C18 6, 28 6, 24 12" fill="none" stroke="white" stroke-width="4"/>
+  <path d="M44 12 C46 6, 36 6, 40 12" fill="none" stroke="white" stroke-width="4"/>
+</svg>
+
                         </div>
                     ` : ''}
                     
@@ -527,11 +602,16 @@
             }
         }
 
+
+        
+
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', () => {
             console.log('🚀 Starting Axios Chatbot with API Key...');
             new AxiosChatbot();
         });
+
+        
     </script>
 </body>
 </html>
