@@ -209,412 +209,172 @@
     </div>
 
     <script>
-        class AxiosChatbot {
-            constructor() {
-                this.isTyping = false;
-                this.isDarkMode = localStorage.getItem('darkMode') === 'true';
-                this.uploadedFiles = [];
-                this.apiKey = 'AIzaSyA90PnHAPBDDS_S_mF6cBMoMgbWzqD6pyg';
-                this.apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`;
-                this.init();
-            }
+class AxiosChatbot {
+    constructor() {
+        this.isTyping = false;
+        this.isDarkMode = localStorage.getItem('darkMode') === 'true';
+        this.uploadedFiles = []; // Removed upload use
+        this.apiKey = 'AIzaSyA90PnHAPBDDS_S_mF6cBMoMgbWzqD6pyg';
+        this.apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`;
+        this.init();
+    }
 
-            init() {
-                this.setupElements();
-                this.setupEventListeners();
-                this.initTheme();
-                this.setupTextareaResize();
-                this.setupAxiosConfig();
+    init() {
+        this.cacheElements();
+        this.bindEvents();
+        this.initTheme();
+        this.resizeTextarea();
+        this.configureAxios();
+        this.checkSendButton();
+    }
+
+    // Cache DOM elements
+    cacheElements() {
+        this.messageInput = document.getElementById('messageInput');
+        this.messagesContainer = document.getElementById('messagesContainer');
+        this.messages = document.getElementById('messages');
+        this.welcomeMessage = document.getElementById('welcomeMessage');
+        this.typingIndicator = document.getElementById('typingIndicator');
+        this.sendBtn = document.getElementById('sendBtn');
+        this.themeToggle = document.getElementById('themeToggle');
+        this.uploadedFilesContainer = document.getElementById('uploadedFiles');
+        this.suggestionCards = document.querySelectorAll('.suggestion-card');
+    }
+
+    // Bind all events
+    bindEvents() {
+        // Send button & Enter key
+        this.sendBtn.onclick = () => this.sendMessage();
+        this.messageInput.onkeydown = (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                this.sendMessage();
+            }
+        };
+        this.messageInput.oninput = () => this.resizeTextarea();
+
+        // Theme toggle
+        this.themeToggle.onclick = () => this.toggleTheme();
+
+        // Suggestion cards
+        this.suggestionCards.forEach(card => {
+            card.onclick = () => {
+                const title = card.querySelector('.font-medium').textContent;
+                const subtitle = card.querySelector('.text-sm').textContent;
+                this.messageInput.value = `${title} ${subtitle}`;
                 this.checkSendButton();
-            }
-
-            setupAxiosConfig() {
-                // Configure Axios defaults
-                axios.defaults.timeout = 30000; // 30 second timeout
-                axios.defaults.headers.post['Content-Type'] = 'application/json';
-                
-                // Add request interceptor for logging
-                axios.interceptors.request.use(
-                    (config) => {
-                        console.log('🚀 Axios Request:', {
-                            url: config.url,
-                            method: config.method,
-                            data: config.data
-                        });
-                        return config;
-                    },
-                    (error) => {
-                        console.error('❌ Axios Request Error:', error);
-                        return Promise.reject(error);
-                    }
-                );
-
-                // Add response interceptor for logging
-                axios.interceptors.response.use(
-                    (response) => {
-                        console.log('✅ Axios Response:', {
-                            status: response.status,
-                            data: response.data
-                        });
-                        return response;
-                    },
-                    (error) => {
-                        console.error('❌ Axios Response Error:', {
-                            status: error.response?.status,
-                            message: error.message,
-                            data: error.response?.data
-                        });
-                        return Promise.reject(error);
-                    }
-                );
-            }
-
-            setupElements() {
-                this.messageInput = document.getElementById('messageInput');
-                this.messagesContainer = document.getElementById('messagesContainer');
-                this.messages = document.getElementById('messages');
-                this.welcomeMessage = document.getElementById('welcomeMessage');
-                this.typingIndicator = document.getElementById('typingIndicator');
-                this.sendBtn = document.getElementById('sendBtn');
-                this.themeToggle = document.getElementById('themeToggle');
-                this.fileInput = document.getElementById('fileInput');
-                this.fileUploadBtn = document.getElementById('fileUploadBtn');
-                this.uploadedFilesContainer = document.getElementById('uploadedFiles');
-            }
-
-            setupEventListeners() {
-                // Send button with Axios
-                this.sendBtn.onclick = () => {
-                    this.sendMessage();
-                };
-
-                // Input field events
-                this.messageInput.oninput = () => {
-                    this.checkSendButton();
-                };
-
-                this.messageInput.onkeydown = (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        this.sendMessage();
-                    }
-                };
-
-                // Theme toggle
-                this.themeToggle.onclick = () => {
-                    this.toggleTheme();
-                };
-
-                // File upload
-                this.fileUploadBtn.onclick = () => {
-                    this.fileInput.click();
-                };
-
-                this.fileInput.onchange = (e) => {
-                    this.handleFileUpload(e.target.files);
-                };
-
-                // Suggestion cards
-                document.querySelectorAll('.suggestion-card').forEach(card => {
-                    card.onclick = () => {
-                        const title = card.querySelector('.font-medium').textContent;
-                        const subtitle = card.querySelector('.text-sm').textContent;
-                        this.messageInput.value = title + ' ' + subtitle;
-                        this.checkSendButton();
-                        this.messageInput.focus();
-                    };
-                });
-            }
-
-            // AXIOS IMPLEMENTATION - Send Message Function
-            sendMessage() {
-                const message = this.messageInput.value.trim();
-                
-                if (!message || this.isTyping) {
-                    return;
-                }
-
-                console.log('📤 Sending message with Axios:', message);
-
-                // Add user message to chat
-                this.addMessageToChat(message, 'user');
-
-                // Clear input and update button
-                this.messageInput.value = '';
-                this.messageInput.style.height = 'auto';
-                this.checkSendButton();
-
-                // Hide welcome message
-                this.hideWelcomeMessage();
-
-                // Set typing state
-                this.setTypingState(true);
-
-                // Send to AI using Axios
-                this.sendToAIWithAxios(message);
-            }
-
-            // AXIOS IMPLEMENTATION - API Call Function
-            async sendToAIWithAxios(message) {
-                try {
-                    // Include file info if files are uploaded
-                    let fullMessage = message;
-                    if (this.uploadedFiles.length > 0) {
-                        const fileNames = this.uploadedFiles.map(f => f.name).join(', ');
-                        fullMessage += `\n\n[Files attached: ${fileNames}]`;
-                    }
-
-                    // Prepare request data
-                    const requestData = {
-                        contents: [{
-                            parts: [{
-                                text: fullMessage
-                            }]
-                        }],
-                        generationConfig: {
-                            temperature: 0.7,
-                            topK: 40,
-                            topP: 0.95,
-                            maxOutputTokens: 1024,
-                        }
-                    };
-
-                    console.log('🔄 Making Axios POST request...');
-
-                    // Make Axios request
-                    const response = await axios.post(this.apiUrl, requestData);
-
-                    // Extract response text
-                    const aiResponse = this.extractResponseText(response.data);
-                    
-                    // Add AI response to chat
-                    this.addMessageToChat(aiResponse, 'assistant');
-                    
-                    // Clear uploaded files after successful send
-                    this.clearUploadedFiles();
-                    
-                    console.log('✅ Message sent successfully with Axios!');
-                    
-                } catch (error) {
-                    console.error('❌ Axios Error:', error);
-                    
-                    let errorMessage = 'Sorry, I encountered an error. Please try again.';
-                    
-                    if (error.response) {
-                        // Server responded with error status
-                        // errorMessage = `API Error (${error.response.status}): ${error.response.data?.error?.message || 'Unknown error'}`;
-                        errorMessage = `API Error (${error.response.status}): ${error.response.data?.error?.message || 'Unknown error'}`;
-                        if(error.response.status === 400) {
-                            errorMessage = 'Since most of the API is not officially available in your Country due to regional restrictions, you need to use a VPN to connect from a supported country 🙏😭.';
-                        } else if (error.response.status === 500) {
-                            errorMessage = 'Internal server error. Please try again later.';
-                        }
-                    } else if (error.request) {
-                        // Request was made but no response received
-                        errorMessage = 'Network error: Unable to reach the AI service. Please check your connection.';
-                    } else {
-                        // Something else happened
-                        errorMessage = `Request error: ${error.message}`;
-                    }
-                    
-                    this.addMessageToChat(errorMessage, 'assistant');
-                } finally {
-                    this.setTypingState(false);
-                }
-            }
-
-            // Extract response text from Google AI API response
-            extractResponseText(data) {
-                try {
-                    if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
-                        return data.candidates[0].content.parts[0].text;
-                    } else {
-                        throw new Error('Invalid response format from Google AI');
-                    }
-                } catch (error) {
-                    console.error('Error extracting response:', error);
-                    return 'Sorry, I received an invalid response format. Please try again.';
-                }
-            }
-
-            checkSendButton() {
-                const hasText = this.messageInput.value.trim().length > 0;
-                const canSend = hasText && !this.isTyping;
-                
-                this.sendBtn.disabled = !canSend;
-                
-                if (canSend) {
-                    this.sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                } else {
-                    this.sendBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                }
-            }
-
-            addMessageToChat(content, role) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `flex gap-3 ${role === 'user' ? 'justify-end' : 'justify-start'}`;
-
-                const isUser = role === 'user';
-                
-                messageDiv.innerHTML = `
-                    ${!isUser ? `
-                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
-                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="128" height="128">
-  <!-- Background Circle -->
-  <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:1" />
-    </linearGradient>
-  </defs>
-  <circle cx="32" cy="32" r="32" fill="url(#grad)" />
-
-  <!-- Cow Head -->
-  <path d="M20 20 C18 28, 46 28, 44 20 L44 44 C46 52, 18 52, 20 44 Z" fill="none" stroke="white" stroke-width="4" />
-
-  <!-- Eyes -->
-  <circle cx="24" cy="30" r="2.5" fill="white" />
-  <circle cx="40" cy="30" r="2.5" fill="white" />
-
-  <!-- Nostrils -->
-  <ellipse cx="28" cy="40" rx="3" ry="2" fill="white" />
-  <ellipse cx="36" cy="40" rx="3" ry="2" fill="white" />
-
-  <!-- Ears -->
-  <path d="M16 24 C12 20, 16 12, 20 16" fill="none" stroke="white" stroke-width="4"/>
-  <path d="M48 24 C52 20, 48 12, 44 16" fill="none" stroke="white" stroke-width="4"/>
-
-  <!-- Horns -->
-  <path d="M20 12 C18 6, 28 6, 24 12" fill="none" stroke="white" stroke-width="4"/>
-  <path d="M44 12 C46 6, 36 6, 40 12" fill="none" stroke="white" stroke-width="4"/>
-</svg>
-
-                        </div>
-                    ` : ''}
-                    
-                    <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
-                        isUser 
-                            ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white' 
-                            : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200 dark:border-gray-700'
-                    }">
-                        <div class="whitespace-pre-wrap">${content}</div>
-                    </div>
-
-                    ${isUser ? `
-                        <div class="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0">
-                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                        </div>
-                    ` : ''}
-                `;
-
-                this.messages.appendChild(messageDiv);
-                this.scrollToBottom();
-            }
-
-            setTypingState(typing) {
-                this.isTyping = typing;
-                this.typingIndicator.classList.toggle('hidden', !typing);
-                this.checkSendButton();
-                
-                if (typing) {
-                    this.scrollToBottom();
-                }
-            }
-
-            hideWelcomeMessage() {
-                if (this.messages.children.length === 1) {
-                    this.welcomeMessage.style.display = 'none';
-                }
-            }
-
-            scrollToBottom() {
-                setTimeout(() => {
-                    this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
-                }, 100);
-            }
-
-            // Theme functions
-            initTheme() {
-                if (this.isDarkMode) {
-                    document.documentElement.classList.add('dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                }
-            }
-
-            toggleTheme() {
-                this.isDarkMode = !this.isDarkMode;
-                localStorage.setItem('darkMode', this.isDarkMode);
-                this.initTheme();
-            }
-
-            // File upload functions
-            handleFileUpload(files) {
-                Array.from(files).forEach(file => {
-                    if (this.isValidFileType(file)) {
-                        this.addUploadedFile(file);
-                    } else {
-                        alert('Unsupported file type. Please upload PDF, Word, PowerPoint, Excel, or Text files.');
-                    }
-                });
-            }
-
-            isValidFileType(file) {
-                const validExtensions = /\.(txt|csv|pdf|doc|docx|ppt|pptx|xls|xlsx)$/i;
-                return validExtensions.test(file.name);
-            }
-
-            addUploadedFile(file) {
-                const fileTag = document.createElement('div');
-                fileTag.className = 'flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm border border-blue-200 dark:border-blue-700';
-                fileTag.innerHTML = `
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    <span class="truncate max-w-32">${file.name}</span>
-                    <button class="remove-file hover:text-red-500 transition-colors">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                `;
-
-                fileTag.querySelector('.remove-file').onclick = () => {
-                    fileTag.remove();
-                    this.uploadedFiles = this.uploadedFiles.filter(f => f !== file);
-                };
-
-                this.uploadedFilesContainer.appendChild(fileTag);
-                this.uploadedFiles.push(file);
-            }
-
-            clearUploadedFiles() {
-                this.uploadedFilesContainer.innerHTML = '';
-                this.uploadedFiles = [];
-            }
-
-            // Textarea auto-resize
-            setupTextareaResize() {
-                this.messageInput.oninput = () => {
-                    this.messageInput.style.height = 'auto';
-                    this.messageInput.style.height = Math.min(this.messageInput.scrollHeight, 120) + 'px';
-                    this.checkSendButton();
-                };
-            }
-        }
-
-
-        
-
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 Starting Axios Chatbot with API Key...');
-            new AxiosChatbot();
+                this.messageInput.focus();
+            };
         });
+    }
 
-        
-    </script>
+    // Configure Axios
+    configureAxios() {
+        axios.defaults.timeout = 30000;
+        axios.defaults.headers.post['Content-Type'] = 'application/json';
+    }
+
+    // Send message
+    async sendMessage() {
+        const message = this.messageInput.value.trim();
+        if (!message || this.isTyping) return;
+
+        this.addMessageToChat(message, 'user');
+        this.messageInput.value = '';
+        this.resizeTextarea();
+        this.checkSendButton();
+        this.hideWelcomeMessage();
+        this.setTypingState(true);
+
+        await this.sendToAI(message);
+    }
+
+    async sendToAI(message) {
+        try {
+            const requestData = {
+                contents: [{ parts: [{ text: message }] }],
+                generationConfig: { temperature: 0.7, topK: 40, topP: 0.95, maxOutputTokens: 1024 }
+            };
+
+            const response = await axios.post(this.apiUrl, requestData);
+            const aiResponse = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || 
+                               'Sorry, received an invalid response.';
+            
+            this.addMessageToChat(aiResponse, 'assistant');
+        } catch (error) {
+            console.error('❌ Axios Error:', error);
+            let errorMessage = 'Sorry, something went wrong. Please try again.';
+            if (error.response) {
+                if (error.response.status === 400) errorMessage = 'API unavailable in your region. Use VPN.';
+                else if (error.response.status === 500) errorMessage = 'Internal server error.';
+            } else if (error.request) {
+                errorMessage = 'Network error. Check your connection.';
+            }
+            this.addMessageToChat(errorMessage, 'assistant');
+        } finally {
+            this.setTypingState(false);
+        }
+    }
+
+    addMessageToChat(content, role) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `flex gap-3 ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+        const isUser = role === 'user';
+
+        messageDiv.innerHTML = `
+            ${!isUser ? `<div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0"></div>` : ''}
+            <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${isUser ? 
+                'bg-gradient-to-r from-blue-500 to-indigo-600 text-white' : 
+                'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200 dark:border-gray-700'}">
+                <div class="whitespace-pre-wrap">${content}</div>
+            </div>
+        `;
+        this.messages.appendChild(messageDiv);
+        this.scrollToBottom();
+    }
+
+    setTypingState(typing) {
+        this.isTyping = typing;
+        this.typingIndicator.classList.toggle('hidden', !typing);
+        this.checkSendButton();
+        if (typing) this.scrollToBottom();
+    }
+
+    checkSendButton() {
+        const canSend = this.messageInput.value.trim() && !this.isTyping;
+        this.sendBtn.disabled = !canSend;
+    }
+
+    hideWelcomeMessage() {
+        if (this.messages.children.length > 0) this.welcomeMessage.style.display = 'none';
+    }
+
+    scrollToBottom() {
+        setTimeout(() => this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight, 100);
+    }
+
+    // Theme
+    initTheme() {
+        document.documentElement.classList.toggle('dark', this.isDarkMode);
+    }
+
+    toggleTheme() {
+        this.isDarkMode = !this.isDarkMode;
+        localStorage.setItem('darkMode', this.isDarkMode);
+        this.initTheme();
+    }
+
+    // Textarea auto-resize
+    resizeTextarea() {
+        this.messageInput.style.height = 'auto';
+        this.messageInput.style.height = Math.min(this.messageInput.scrollHeight, 120) + 'px';
+        this.checkSendButton();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => new AxiosChatbot());
+
+</script>
+
 </body>
 </html>
