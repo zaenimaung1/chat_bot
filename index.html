@@ -203,7 +203,7 @@
             </div>
             
             <p class="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">
-                Press Enter to send your message.
+               GawNa can make mistakes, please verify critical information independently.
             </p>
         </div>
     </div>
@@ -305,7 +305,7 @@ class AxiosChatbot {
             console.error('❌ Axios Error:', error);
             let errorMessage = 'Sorry, something went wrong. Please try again.';
             if (error.response) {
-                if (error.response.status === 400) errorMessage = 'API unavailable in your region. Use VPN.';
+                if (error.response.status === 400) errorMessage = 'Since most of the API is not officially available in your Country due to regional restrictions, you need to use a VPN to connect from a supported country 🙏😭.';
                 else if (error.response.status === 500) errorMessage = 'Internal server error.';
             } else if (error.request) {
                 errorMessage = 'Network error. Check your connection.';
