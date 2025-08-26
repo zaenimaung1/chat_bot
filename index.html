@@ -321,12 +321,35 @@ class AxiosChatbot {
         messageDiv.className = `flex gap-3 ${role === 'user' ? 'justify-end' : 'justify-start'}`;
         const isUser = role === 'user';
 
+        // Split content into title and body
+        let title = '';
+        let body = '';
+        if (content) {
+            // Try to split by first line
+            const lineSplit = content.split(/\r?\n/);
+            if (lineSplit.length > 1) {
+                title = lineSplit[0];
+                body = lineSplit.slice(1).join('\n');
+            } else {
+                // Try to split by first sentence
+                const match = content.match(/(.+?[\.!?])\s*(.*)/s);
+                if (match) {
+                    title = match[1];
+                    body = match[2];
+                } else {
+                    title = content;
+                    body = '';
+                }
+            }
+        }
+
         messageDiv.innerHTML = `
-            ${!isUser ? `<div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0"></div>` : ''}
+            ${!isUser ? `<div class=\"w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0\">\n                <svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 64 64\\" width=\\"32\\" height=\\"32\\">\n                  <defs>\n                    <linearGradient id=\\"grad\\" x1=\\"0%\\" y1=\\"0%\\" x2=\\"100%\\" y2=\\"100%\\">\n                      <stop offset=\\"0%\\" style=\\"stop-color:#2196F3;stop-opacity:1\\" />\n                      <stop offset=\\"100%\\" style=\\"stop-color:#9C27B0;stop-opacity:1\\" />\n                    </linearGradient>\n                  </defs>\n                  <circle cx=\\"32\\" cy=\\"32\\" r=\\"32\\" fill=\\"url(#grad)\\" />\n                  <path d=\\"M20 20 C18 28, 46 28, 44 20 L44 44 C46 52, 18 52, 20 44 Z\\" fill=\\"none\\" stroke=\\"white\\" stroke-width=\\"4\\" />\n                  <circle cx=\\"24\\" cy=\\"30\\" r=\\"2.5\\" fill=\\"white\\" />\n                  <circle cx=\\"40\\" cy=\\"30\\" r=\\"2.5\\" fill=\\"white\\" />\n                  <ellipse cx=\\"28\\" cy=\\"40\\" rx=\\"3\\" ry=\\"2\\" fill=\\"white\\" />\n                  <ellipse cx=\\"36\\" cy=\\"40\\" rx=\\"3\\" ry=\\"2\\" fill=\\"white\\" />\n                  <path d=\\"M16 24 C12 20, 16 12, 20 16\\" fill=\\"none\\" stroke=\\"white\\" stroke-width=\\"4\\"/>\n                  <path d=\\"M48 24 C52 20, 48 12, 44 16\\" fill=\\"none\\" stroke=\\"white\\" stroke-width=\\"4\\"/>\n                  <path d=\\"M20 12 C18 6, 28 6, 24 12\\" fill=\\"none\\" stroke=\\"white\\" stroke-width=\\"4\\"/>\n                  <path d=\\"M44 12 C46 6, 36 6, 40 12\\" fill=\\"none\\" stroke=\\"white\\" stroke-width=\\"4\\"/>\n                </svg>\n            </div>` : ''}
             <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${isUser ? 
                 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white' : 
                 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200 dark:border-gray-700'}">
-                <div class="whitespace-pre-wrap">${content}</div>
+                <div class="font-bold mb-1 whitespace-pre-line">${title}</div>
+                ${body ? `<div class=\"whitespace-pre-wrap text-sm\">${body}</div>` : ''}
             </div>
         `;
         this.messages.appendChild(messageDiv);
